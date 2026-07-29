@@ -1,0 +1,41 @@
+---
+description: Agent-Notes 仓库建设与编辑约定（始终生效）
+alwaysApply: true
+---
+
+# 本库怎么建、怎么改
+
+个人 Obsidian vault + Git，给 Agent 改笔记用。目标是简单可回滚，不是第二套知识框架。
+
+## 布局（现状）
+
+```text
+Agent-Notes/
+├── AGENTS.md      ← 短入口（保留）
+├── .cursor/       ← rules / skills / mcp.json（保留）
+├── .obsidian/     ← 库配置（保留；密钥不进 Git）
+└── 笔记/*.md      ← 唯一笔记区；默认平铺，不套子目录
+```
+
+## 建设原则（已吸收，直接约束本库）
+
+1. **能脚本就别只靠点 UI**：Obsidian 打开时优先 MCP；Skills 约束写法。
+2. **笔记 Markdown 是正文真相**：不搞双写缓存当 SSOT。
+3. **密钥永不入库**：API Key / 证书只留本机与环境变量；`plugins/**/data.json` 已 ignore。
+4. **Agent 面可说明**：Skill/MCP 写在 `obsidian-stack.mdc` 与 `.cursor/SETUP.md`。
+5. **简体中文**回复；改完再 commit（未要求勿提交）。
+
+## 编辑
+
+1. 保留 frontmatter（勿无故删 `tags` / `status` / `created`）。
+2. 站内 `[[wikilink]]`；优先 `vault_patch` / 按章节改，忌整文件覆盖。
+3. 删、批量改标签、重命名 → 先确认。
+4. 新主题先搜 vault，再写 `笔记/<标题>.md`。
+
+## 反过度设计
+
+- 有歧义先问一句再动手；**只做被要求的事**。
+- **没有的目录/配置不要预建**；用户说「以后再说」= 现在零实现。
+- 禁止：`00-Inbox` / `10-Topics` / `90-*`、无必要专题子目录、空附件/模板/首页、指向不存在路径的 `.obsidian` 配置。
+- 「放到笔记下」≠ 再套专题夹；「其他能否去掉」≠ 删 `.cursor` / `AGENTS.md` / Git。
+- 被纠正后立刻改回简单结构，并更新本规则。
