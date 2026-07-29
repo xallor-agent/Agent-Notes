@@ -1,0 +1,49 @@
+---
+description: 本库 Obsidian Skills 与 MCP 清单（Agent 操作面）
+alwaysApply: true
+---
+
+# Obsidian Skill + MCP
+
+本库 Agent 栈：**Skills 约束写法 + MCP 执行读写**。详情笔记：[[如何更好的面向Agent 的Obsidian 笔记编辑工具]]。
+
+## Skills（`%USERPROFILE%\.cursor\skills\`）
+
+| Skill | 用途 |
+|-------|------|
+| `obsidian-markdown` | wikilink、embed、callout、properties、标签 |
+| `obsidian-bases` | `.base` 视图 / filter / formula |
+| `json-canvas` | `.canvas` 节点与边 |
+| `obsidian-cli` | `obsidian` CLI（需 Obsidian 打开） |
+| `defuddle` | 网页抽正文为干净 Markdown |
+
+上游：https://github.com/kepano/obsidian-skills
+
+## MCP：`user-obsidian`
+
+- 插件：Obsidian **Local REST API with MCP**（`obsidian-local-rest-api`）
+- 前置：Obsidian 打开本 vault；HTTP MCP 默认 `http://127.0.0.1:27123/mcp/`
+- 凭证：只在本机插件 `data.json` 与 `~/.cursor/mcp.json`；**勿写入 Git / 笔记正文**
+
+### 常用工具
+
+| 工具 | 用途 |
+|------|------|
+| `vault_list` / `vault_read` / `vault_write` / `vault_append` / `vault_patch` | 目录与读写；改文优先 `vault_patch` |
+| `vault_get_document_map` | 改前摸清 heading / block / frontmatter |
+| `vault_move` / `vault_copy` / `vault_delete` | 移动复制删除（删前确认） |
+| `search_simple` / `search_query` | 全文 / JsonLogic 元数据搜索 |
+| `tag_list` / `active_file_get_path` / `open_file` | 标签、当前文件、打开 |
+| `command_list` / `command_execute` | 执行 Obsidian 命令 |
+
+### 推荐编辑流程
+
+1. `search_simple` 或 `vault_list` 定位  
+2. `vault_get_document_map` → 针对性 `vault_read`  
+3. `vault_patch`（append/prepend/replace）改章节，避免整文件 `vault_write`  
+4. 需要时用 Skill 校验 wikilink / callout / frontmatter  
+
+### Git
+
+- 忽略：workspace、插件 `data.json`、`main.js`  
+- 提交：笔记、`AGENTS.md`、`.cursor/rules`、`.obsidian` 中非密钥配置（`app.json`、`community-plugins.json`、`manifest.json` 等）

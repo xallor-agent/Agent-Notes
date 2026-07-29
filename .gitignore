@@ -1,0 +1,36 @@
+# --- Obsidian workspace / cache (noisy, machine-local) ---
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/workspaces.json
+.obsidian/graph.json
+.obsidian/cache
+.obsidian/plugins/*/cache/
+
+# --- Secrets & plugin runtime data (API keys, certs, tokens) ---
+.obsidian/plugins/**/data.json
+.obsidian/plugins/**/data-*.json
+
+# --- Large plugin binaries (reinstall from Community Plugins) ---
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/main.js.map
+
+# --- Trash / sync / OS ---
+.trash/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.tmp
+*.swp
+*~
+
+# --- Optional large attachments (uncomment if vault grows) ---
+# Attachments/
+# **/*.pdf
+# **/*.mp4
+# **/*.zip
+
+# --- Cursor / IDE local (keep rules; ignore caches) ---
+.cursor/*.log
+.vscode/
+.idea/
+*.log
