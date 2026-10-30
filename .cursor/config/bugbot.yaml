@@ -1,0 +1,17 @@
+# Bugbot 读 base 分支上的这份文件，不读 PR 头。改完需进 master 才对后续审查生效。
+version: 1
+
+triggers:
+  drafts: false
+  frequency: everyPush # everyPush | oncePerPr
+
+review:
+  effort: default # low | default | high | smart
+  incremental: true
+
+prSummary:
+  mode: comment # disabled | description | comment
+  riskScore: true
+
+autofix:
+  mode: disabled # disabled | newBranch | existingBranch
