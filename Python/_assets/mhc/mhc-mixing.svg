@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="510" viewBox="0 0 960 510">
+<title>双随机混合：均值守恒发生在哪一步？</title><desc>两条流，每条只有一个数；矩阵的每一行、每一列之和都是 1。</desc>
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto-start-reverse"><path d="M0 0 L9 4.5 L0 9Z" fill="#65758b"/></marker></defs>
+<rect width="960" height="510" rx="18" fill="#f6f8fc"/>
+<style>text{font-family:'Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#172b45} .small{font-size:18px;fill:#52647b}</style>
+<text x="36" y="49" font-size="27" font-weight="700">双随机混合：均值守恒发生在哪一步？</text>
+<text x="36" y="83" class="small">两条流，每条只有一个数；矩阵的每一行、每一列之和都是 1。</text>
+<rect x="48" y="144" width="185" height="142" rx="12" fill="#e9f0ff" stroke="#9bb6df" stroke-width="1.5"/>
+<text x="140.5" y="194.0" text-anchor="middle" style="fill:#172b45" font-size="24">输入 X</text>
+<text x="140.5" y="222.0" text-anchor="middle" style="fill:#172b45" font-size="24">2</text>
+<text x="140.5" y="250.0" text-anchor="middle" style="fill:#172b45" font-size="24">6</text>
+<rect x="330" y="144" width="300" height="142" rx="12" fill="#e9f0ff" stroke="#9bb6df" stroke-width="1.5"/>
+<text x="480.0" y="194.0" text-anchor="middle" style="fill:#172b45" font-size="24">混合矩阵 R</text>
+<text x="480.0" y="222.0" text-anchor="middle" style="fill:#172b45" font-size="24">0.75     0.25</text>
+<text x="480.0" y="250.0" text-anchor="middle" style="fill:#172b45" font-size="24">0.25     0.75</text>
+<rect x="727" y="144" width="185" height="142" rx="12" fill="#e9f0ff" stroke="#9bb6df" stroke-width="1.5"/>
+<text x="819.5" y="194.0" text-anchor="middle" style="fill:#172b45" font-size="23">混合结果 R × X</text>
+<text x="819.5" y="222.0" text-anchor="middle" style="fill:#172b45" font-size="23">3</text>
+<text x="819.5" y="250.0" text-anchor="middle" style="fill:#172b45" font-size="23">5</text>
+<polyline points="233,215 330,215" fill="none" stroke="#65758b" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="630,215 727,215" fill="none" stroke="#65758b" stroke-width="2.2" marker-end="url(#arrow)"/>
+<text x="140" y="322" text-anchor="middle" style="fill:#2862ab" font-size="23">平均值 4</text>
+<text x="819" y="322" text-anchor="middle" style="fill:#2862ab" font-size="23">平均值 4</text>
+<text x="480" y="320" text-anchor="middle" style="fill:#172b45" font-size="19">每行做加权平均；每列使总和保持。</text>
+<rect x="48" y="372" width="250" height="94" rx="12" fill="#e9f0ff" stroke="#9bb6df" stroke-width="1.5"/>
+<text x="173.0" y="412.0" text-anchor="middle" style="fill:#172b45" font-size="20">混合结果 [3, 5]</text>
+<text x="173.0" y="440.0" text-anchor="middle" style="fill:#172b45" font-size="20">平均值 4</text>
+<rect x="354" y="372" width="250" height="94" rx="12" fill="#e5f5ee" stroke="#8ec9ab" stroke-width="1.5"/>
+<text x="479.0" y="412.0" text-anchor="middle" style="fill:#172b45" font-size="18">写回更新 + [1, 1]</text>
+<text x="479.0" y="440.0" text-anchor="middle" style="fill:#172b45" font-size="18">子层输出 u = 1，q = [1, 1]</text>
+<rect x="660" y="372" width="252" height="94" rx="12" fill="#e5f5ee" stroke="#8ec9ab" stroke-width="1.5"/>
+<text x="786.0" y="412.0" text-anchor="middle" style="fill:#172b45" font-size="20">整层输出 [4, 6]</text>
+<text x="786.0" y="440.0" text-anchor="middle" style="fill:#172b45" font-size="20">平均值 5</text>
+<polyline points="298,419 354,419" fill="none" stroke="#65758b" stroke-width="2.2" marker-end="url(#arrow)"/>
+<polyline points="604,419 660,419" fill="none" stroke="#65758b" stroke-width="2.2" marker-end="url(#arrow)"/>
+</svg>
