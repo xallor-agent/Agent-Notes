@@ -447,7 +447,6 @@ sinkhorn_max_error=1.788e-06 stream_spread=0.477637
 
 | 修复点 | 为什么需要 |
 | --- | --- |
-| 显式设置 `moe_router_score_function='sigmoid'` | HF 配置省略评分字段时，仍需与模型的 MoE 路由实现一致 |
 | Core 声明新字段时，设置 `enable_mhc_connections` 和 `mhc_num_residual_streams` | 让 Core 按正确开关和流数构造 mHC 主干；只设置早期 dev 接口的字段可能无法启用当前实现 |
 | 在 MTP 的配置副本上关闭新的 mHC 开关 | 多 token 预测辅助层有自己的配置路径；关闭辅助层开关时保留主干的 mHC 设置 |
 | 深复制配置时共享 bridge 对象 | Core 的逐层配置构造会复制配置字典；共享 bridge 可避免复制进入它持有的进程组，并保持既有配置复制语义 |
