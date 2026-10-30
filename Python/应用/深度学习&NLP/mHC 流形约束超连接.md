@@ -207,8 +207,8 @@ pre 与 post 也有约束，但不要求系数之和为 1。论文采用 p = sig
 看一个每行和为 1、但列和不为 1 的矩阵：
 
 $$
-R=\begin{bmatrix}1&0\\1&0\end{bmatrix},\qquad
-R\begin{bmatrix}2\\6\end{bmatrix}=\begin{bmatrix}2\\2\end{bmatrix}
+R=\begin{bmatrix}1&0\cr 1&0\end{bmatrix},\qquad
+R\begin{bmatrix}2\cr 6\end{bmatrix}=\begin{bmatrix}2\cr 2\end{bmatrix}
 $$
 
 两条输出都只读取第一条流。每条输出确实是加权平均，但所有输出加起来，把第一条输入用了两遍，第二条一次也没用。总和从 8 变成 4。
@@ -222,9 +222,9 @@ $$
 取两条只有一个数的流：X = [2, 6]ᵀ，并使用：
 
 $$
-R=\begin{bmatrix}0.75&0.25\\0.25&0.75\end{bmatrix}
+R=\begin{bmatrix}0.75&0.25\cr 0.25&0.75\end{bmatrix}
 \quad\Longrightarrow\quad
-RX=\begin{bmatrix}3\\5\end{bmatrix}
+RX=\begin{bmatrix}3\cr 5\end{bmatrix}
 $$
 
 第一条流得到 0.75 × 2+0.25 × 6=3，第二条流得到 5。混合前后平均值都是 4。
