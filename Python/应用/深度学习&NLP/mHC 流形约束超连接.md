@@ -7,7 +7,7 @@ tags:
   - mhc
 created: 2026-10-29
 updated: 2026-10-30
-status: evergreen
+status: reviewed
 ---
 
 # 从残差连接到 mHC：原理、Transformer 接入与训练实践
@@ -435,7 +435,7 @@ sinkhorn_max_error=1.788e-06 stream_spread=0.477637
 
 发布版的 `HyperConnectionTransformerLayer` 位于 `transformer_layer.py`；核对的 `main` 提交 `a77288b` 将它放进独立文件。两者均有这个类。[PyPI 0.20.0](https://pypi.org/project/megatron-core/0.20.0/) · [发布版模型层](https://github.com/NVIDIA/Megatron-LM/blob/core_v0.20.0/megatron/core/transformer/transformer_layer.py) · [main 模型层](https://github.com/NVIDIA/Megatron-LM/blob/a77288b18f1a3e5a7bfe2e680f6f693a7366c2e5/megatron/core/transformer/hyper_connection_transformer_layer.py)
 
-**原生 mHC 支持解决了连接层的计算，Flash 训练还要完成模型级接入。** KDA、DSA、MoE、mHC 的配置和权重必须同时对齐。下面的两个 bridge 修复，展示了组件已有能力时，接入层仍可能遇到的具体问题。
+这里需要区分三层能力：**通用 mHC 实现**提供多流状态、连接参数、Sinkhorn 和 Transformer 层接入；**GLM 专用架构实现**提供目标模型所需的 KDA、KPool-DSA 及混合层配置；**bridge 模型接入**把 HF 配置和权重对应到这些实现，并正确构造主干与 MTP。Core `0.20.0` 已具备第一层能力，Flash 能否直接训练还取决于后两层。
 
 ### 6.3 两个 mcore-bridge PR 补在哪一环？
 
@@ -453,7 +453,17 @@ sinkhorn_max_error=1.788e-06 stream_spread=0.477637
 
 其中 mHC 字段对应 Core [#4531](https://github.com/NVIDIA/Megatron-LM/pull/4531)，逐层配置复制路径对应 [#6313](https://github.com/NVIDIA/Megatron-LM/pull/6313)。#246 保留官方发布 checkpoint 的键映射；这些修改也不涉及 GPU 算子移植。
 
-两个 PR 的验证重点是能力检查、配置转换和复制行为，已有对应的定向单元测试记录。2026-10-30 的服务器对照验证进一步确认：原 Core `01ac4e83` 通过 Flash 能力检查，PyPI `0.20.0` 发布包则缺少 KDA 层实现与注册，以及 GLM 所需的 mHC、KPool-DSA 专用配置，在模型构造前被拒绝。因此，**`0.20.0` 已支持通用 mHC，但不能直接替代本例的 Flash Core 源码组合**；两个 bridge PR 也不会补齐 Core 中缺失的模型实现。本次发布包验证止于能力检查，未进入完整模型训练。
+两个 PR 的定向单元测试覆盖能力检查、配置转换和复制行为，未覆盖完整模型训练。它们修复的是 bridge 接入，不会补齐 Core 中缺失的模型实现。
+
+2026-10-30 的服务器对照验证中，原 Core `01ac4e83` 通过 Flash 能力检查；PyPI `0.20.0` 的上述三个通用字段 `enable_mhc_connections`、`mhc_num_residual_streams`、`use_fused_mhc` **均存在**，但与该目标源码组合相比，缺少以下能力：
+
+| 类别 | `0.20.0` 发布包中的具体缺口 |
+| --- | --- |
+| KDA 层 | 缺少 `KDALayerConfig`、`gated_delta_net/kda.py` 和 `LAYER_CONFIG_MAP['K']` 注册，无法提供层配置中的 `kda_two_stage_gates` |
+| KPool-DSA 配置 | 缺少 `dsa_indexer_kpool`、`dsa_indexer_kpool_always_select_tail` |
+| GLM 路径要求的 mHC 扩展配置 | 缺少 `mhc_norm_eps_inside_sqrt`、`mhc_keep_mappings_in_fp32`、`mhc_learned_output_contract`；这些与前述通用开关、流数和融合选项是不同字段 |
+
+因此，**通用 mHC 支持不等于 GLM-5.3-Flash 已能在该发布包上直接训练**。`0.20.0` 在模型构造前被能力检查拒绝，不能直接替代本例的 Flash Core 源码组合；本次发布包验证未进入完整模型训练。
 
 ## 参考资料
 
