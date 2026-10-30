@@ -33,11 +33,11 @@ $$
 以常见的 decoder-only、Pre-Norm Transformer 为例，一个块先做 Attention，再做 FFN。Norm 表示归一化，Pre-Norm 表示把它放在计算分支的入口。**两个子层各有一条残差连接**；以下公式省略 Dropout 等细节：
 
 $$
-h=x+\operatorname{Attention}(\operatorname{Norm}_1(x))
+h=x+\mathrm{Attention}(\mathrm{Norm}_1(x))
 $$
 
 $$
-y=h+\operatorname{FFN}(\operatorname{Norm}_2(h))
+y=h+\mathrm{FFN}(\mathrm{Norm}_2(h))
 $$
 
 这里的 x、h、y 是同一组 token 在三个计算位置的状态。用 C 表示每个 token 的隐藏向量长度，输入张量通常包含 batch、序列和特征三个维度；残差相加前，两侧形状必须一致。
@@ -89,11 +89,11 @@ $$
 图 1 采用 **Pre-Norm**：先归一化计算分支的输入，再做子层计算，旁路中的 x 直接参与相加。原始 Transformer 使用的 **Post-Norm**，则在残差相加之后归一化：
 
 $$
-\text{Pre-Norm：}\quad y=x+F(\operatorname{Norm}(x))
+\text{Pre-Norm：}\quad y=x+F(\mathrm{Norm}(x))
 $$
 
 $$
-\text{Post-Norm：}\quad y=\operatorname{Norm}(x+F(x))
+\text{Post-Norm：}\quad y=\mathrm{Norm}(x+F(x))
 $$
 
 Post-Norm 的整体输出和梯度还要经过外层 Norm，因此前面的“原样旁路”公式不能不加区别地套到整个 Post-Norm 子层。Pre-Norm、Post-Norm 都使用残差，但直接通路的位置不同。原始结构见 [Attention Is All You Need，§3.1](https://arxiv.org/abs/1706.03762)，两种放置方式的训练分析见 [On Layer Normalization in the Transformer Architecture](https://arxiv.org/abs/2002.04745)。
@@ -207,8 +207,8 @@ pre 与 post 也有约束，但不要求系数之和为 1。论文采用 p = sig
 看一个每行和为 1、但列和不为 1 的矩阵：
 
 $$
-R=\begin{bmatrix}1&0\\1&0\end{bmatrix},\qquad
-R\begin{bmatrix}2\\6\end{bmatrix}=\begin{bmatrix}2\\2\end{bmatrix}
+R=\begin{bmatrix}1&0\cr 1&0\end{bmatrix},\qquad
+R\begin{bmatrix}2\cr 6\end{bmatrix}=\begin{bmatrix}2\cr 2\end{bmatrix}
 $$
 
 两条输出都只读取第一条流。每条输出确实是加权平均，但所有输出加起来，把第一条输入用了两遍，第二条一次也没用。总和从 8 变成 4。
@@ -222,9 +222,9 @@ $$
 取两条只有一个数的流：X = [2, 6]ᵀ，并使用：
 
 $$
-R=\begin{bmatrix}0.75&0.25\\0.25&0.75\end{bmatrix}
+R=\begin{bmatrix}0.75&0.25\cr 0.25&0.75\end{bmatrix}
 \quad\Longrightarrow\quad
-RX=\begin{bmatrix}3\\5\end{bmatrix}
+RX=\begin{bmatrix}3\cr 5\end{bmatrix}
 $$
 
 第一条流得到 0.75 × 2+0.25 × 6=3，第二条流得到 5。混合前后平均值都是 4。
