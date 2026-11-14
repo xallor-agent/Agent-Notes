@@ -42,7 +42,7 @@ $$
 
 这里的 x、h、y 是同一组 token 在三个计算位置的状态。用 C 表示每个 token 的隐藏向量长度，输入张量通常包含 batch、序列和特征三个维度；残差相加前，两侧形状必须一致。
 
-![Pre-Norm Transformer 中 Attention 和 FFN 各自的残差连接](../../_assets/mhc/transformer-residual.png)
+![Pre-Norm Transformer 中 Attention 和 FFN 各自的残差连接](_assets/mhc/transformer-residual.png)
 
 *图 1：Attention 的残差保存 x，FFN 的残差保存 Attention 更新后的 h。每次相加都发生在相同 token、相同特征位置上。*
 
@@ -120,7 +120,7 @@ HC 把连接也变成学习对象。可以分两步理解这个变化。
 
 Hyper-Connections（HC）给每个 token 保存 n 条流，每条仍是完整的 C 维向量，总状态宽度是 nC。例如 C=4096、n=4 时，保存四个 4096 维向量。子层先读取它们的加权组合，仍用一个 4096 维输入执行一次 Attention 或 FFN，再把结果写回各流。
 
-![普通残差与四流结构对照：每条流都有 C 维，子层仍计算一次](../../_assets/mhc/mhc-streams.png)
+![普通残差与四流结构对照：每条流都有 C 维，子层仍计算一次](_assets/mhc/mhc-streams.png)
 
 *图 2：扩宽的是层间状态。Attention/FFN 的输入和输出宽度仍为 C；内部读写路径在图 3 展开。*
 
@@ -159,7 +159,7 @@ HC 与 mHC 使用相同的读取、混合、写回骨架；mHC 的主要区别�
 
 先看一个 token 的残差状态，把各流排成矩阵 X（n 行、C 列的实数矩阵）。令 p 是 pre 的 n 个系数，q 是 post 的 n 个系数，R 是 n ×  n 的残差混合矩阵。这里省略了 batch 和序列维度；Attention 仍会按模型的注意力规则读取序列中的其他位置。
 
-![mHC 单层计算：pre 汇总后进行一次子层计算，post 写回，并与 res 混合结果相加](../../_assets/mhc/mhc-paths.png)
+![mHC 单层计算：pre 汇总后进行一次子层计算，post 写回，并与 res 混合结果相加](_assets/mhc/mhc-paths.png)
 
 *图 3：实线表示特征的流动，虚线表示当前输入生成的映射系数。Norm 是子层输入的归一化；生成映射的分支也有自己的归一化。*
 
@@ -231,7 +231,7 @@ $$
 
 再补上计算分支：取读取系数 p=[0.25,0.75]，子层输入是 z=0.25 × 2+0.75 × 6=5。假设子层对此输入产生更新 u=F(z)=1，取写回系数 q = [1, 1]ᵀ，就分别给两条流加 1，得到 Y = [4, 6]ᵀ。这里的 u=1 是为了演示连接而给定的结果；真正模型中的更新由 Attention 或 FFN 计算。
 
-![双随机混合保留流均值，加入子层更新后均值可以变化](../../_assets/mhc/mhc-mixing.png)
+![双随机混合保留流均值，加入子层更新后均值可以变化](_assets/mhc/mhc-mixing.png)
 
 *图 4：均值守恒适用于残差混合。图中取子层输出 u=1，两条流的写回系数都为 1，加入更新后均值从 4 变成 5。*
 
@@ -263,7 +263,7 @@ mHC 放在 Attention 与 FFN 的外侧，替代各自的残差连接。分词、
 
 用 B 表示 batch 大小，T 表示序列长度，n 表示流数，C 表示隐藏宽度，V 表示词表大小。一个小型 decoder-only 模型可以这样连接：
 
-![mHC 语言模型的完整训练路径](../../_assets/mhc/mhc-training.png)
+![mHC 语言模型的完整训练路径](_assets/mhc/mhc-training.png)
 
 *图 5：一个块包含两套独立 mHC。loss 的梯度沿计算图更新 Attention、FFN 和连接参数。*
 
@@ -282,7 +282,7 @@ mHC 放在 Attention 与 FFN 的外侧，替代各自的残差连接。分词、
 
 ### 5.2 一个 mHC 模块负责什么？
 
-下面的 `forward` 是[完整可运行脚本](../../_assets/mhc/mhc_tiny_lm.py)中的核心。`maps(x)` 根据输入生成读取系数 `p`、写回系数 `q`、双随机混合矩阵 `r`。`sublayer` 接收 `[B,T,C]`，内部包含 Norm 和一次 Attention 或 FFN。
+下面的 `forward` 是[完整可运行脚本](_assets/mhc/mhc_tiny_lm.py)中的核心。`maps(x)` 根据输入生成读取系数 `p`、写回系数 `q`、双随机混合矩阵 `r`。`sublayer` 接收 `[B,T,C]`，内部包含 Norm 和一次 Attention 或 FFN。
 
 ```python
 # qa:skip — MHC 类的方法节选，完整定义和运行入口见附件 mhc_tiny_lm.py
@@ -357,7 +357,7 @@ Sinkhorn 使用 50 轮迭代，并检查最大行列和误差小于 `1e-4`。这
 
 任务是学习循环 token 序列 `0,1,…,10,0,1,…` 的下一个 token，从不同起点采样训练片段。这样无需下载语料、tokenizer 或模型，CPU 即可运行；它检验结构接入和训练流程，不用于评估语言理解能力。
 
-下载 [mhc_tiny_lm.py](../../_assets/mhc/mhc_tiny_lm.py)，放在一个空目录，并在该目录打开终端。使用 Python 3.12；Windows PowerShell 的 CPU 运行命令如下：
+下载 [mhc_tiny_lm.py](_assets/mhc/mhc_tiny_lm.py)，放在一个空目录，并在该目录打开终端。使用 Python 3.12；Windows PowerShell 的 CPU 运行命令如下：
 
 ```powershell
 python -m venv .venv
